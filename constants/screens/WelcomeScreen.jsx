@@ -2,8 +2,10 @@ import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 import { Colors } from "../Colors";
 import CommonButton from "../components/CommonButton";
+import { useRouter } from "expo-router";
 
-const LoginScreen = () => {
+const WelcomeScreen = () => {
+  const router = useRouter()
   return (
     <View>
       <Image
@@ -16,7 +18,7 @@ const LoginScreen = () => {
             fontFamily: "outfit-bold",
             fontSize: 24,
             letterSpacing: 0.5,
-            color: Colors.DARKGREY,
+            color: Colors.BLACK,
             textAlign: "center",
           }}
         >
@@ -38,6 +40,7 @@ const LoginScreen = () => {
 
         <View style={{ marginTop:60 }}>
           <CommonButton
+          onPress = {() => router.push("auth/sign-in")}
             label={"Get Start"}
             enabled={true}
             marginLeft={20}
@@ -45,7 +48,7 @@ const LoginScreen = () => {
             width={"90%"}
             height={50}
             borderRadius={25}
-            backgroundColor={Colors.DARKGREY}
+            backgroundColor={Colors.BLACK}
             fontColor={Colors.WHITE}
             fontSize={20}
             fontFamily={"outfit-medium"}
@@ -69,4 +72,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default WelcomeScreen;

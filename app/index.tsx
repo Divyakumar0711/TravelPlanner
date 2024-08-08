@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import LoginScreen from "../constants/screens/LoginScreen";
+import WelcomeScreen from "../constants/screens/WelcomeScreen";
 import CommonButton from "../constants/components/CommonButton";
 export default function Index() {
   return (
@@ -8,7 +8,7 @@ export default function Index() {
         flex: 1,
       }}
     >
-      <LoginScreen />
+      <WelcomeScreen />
     </View>
   );
 }
