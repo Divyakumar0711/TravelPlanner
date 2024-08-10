@@ -58,7 +58,7 @@ const SignIn = () => {
       passwordError.current = null;
     }
   };
- 
+
   const onSignIn = async () => {
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
@@ -226,5 +226,12 @@ const styles = StyleSheet.create({
     padding: 25,
     paddingTop: 40,
     backgroundColor: Colors.WHITE,
+  },
+  errorText: {
+    color: Colors.PINK,
+    marginLeft: 10,
+    marginTop: 5,
+    fontFamily: "Outfit",
+    fontSize: 14,
   },
 });

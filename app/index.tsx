@@ -7,6 +7,8 @@ import { Redirect } from "expo-router";
 export default function Index() {
   const user = FIREBASE_AUTH.currentUser;
   return (
-    <View style={{ flex: 1 }}>{user ? <Redirect href={"/mytrip"}/> : <WelcomeScreen />}</View>
+    <View style={{ flex: 1 }}>
+      {user ? <Redirect href={"/mytrip"} /> : <WelcomeScreen />}
+    </View>
   );
 }
