@@ -1,19 +1,75 @@
-import { StyleSheet, Text, View, TextInput, Image,TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
-import { useNavigation } from "expo-router";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { Redirect, useNavigation } from "expo-router";
 import { Colors } from "../../../constants/Colors";
 import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { FIREBASE_AUTH } from "../../../configs/FirebaseConfig";
 const SignIn = () => {
   const navigation = useNavigation();
   const router = useRouter();
+  const auth = FIREBASE_AUTH;
+
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const emailError = useRef(null);
+  const passwordError = useRef(null);
 
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
+
+  const onShowPassword = (password) => {
+    setShowPassword(!showPassword);
+  };
+
+  const validateEmail = () => {
+    const emailRes = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+      emailError.current = "Email is required";
+    } else if (!emailRes.test(email)) {
+      emailError.current = "Enter valid email";
+    } else {
+      emailError.current = null;
+    }
+  };
+
+  const validatePassword = () => {
+    const passwordRes = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+    if (!password) {
+      passwordError.current = "Password is required";
+    } else if (!passwordRes.test(password)) {
+      passwordError.current = "Enter valid password";
+    } else {
+      passwordError.current = null;
+    }
+  };
+ 
+  const onSignIn = async () => {
+    try {
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      if (user) router.replace("/mytrip");
+    } catch (error) {
+      console.log(error);
+      //alert("Sign in failed: " + error.message);
+      alert("Sign in failed, invalid credential");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => router.back()}>
@@ -72,8 +128,17 @@ const SignIn = () => {
             fontSize: 16,
             color: "#292643",
           }}
+          onFocus={() => {
+            setEmail("");
+            emailError.current = null;
+          }}
+          onBlur={validateEmail}
+          onChangeText={(txt) => setEmail(txt)}
         />
       </View>
+      {emailError.current && (
+        <Text style={styles.errorText}>{emailError.current}</Text>
+      )}
 
       <View
         style={{
@@ -90,6 +155,7 @@ const SignIn = () => {
         <TextInput
           placeholder="Enter Password"
           placeholderTextColor={"#787586"}
+          secureTextEntry={showPassword ? false : true}
           style={{
             width: "82%",
             fontFamily: "Outfit",
@@ -97,13 +163,26 @@ const SignIn = () => {
             color: "#292643",
             paddingLeft: 5,
           }}
+          onChangeText={(txt) => setPassword(txt)}
+          onFocus={() => {
+            setPassword("");
+            passwordError.current = null;
+          }}
+          onBlur={validatePassword}
         />
-        <Ionicons name="eye" size={24} color="black" />
-        {/* <Ionicons name="eye-off" size={24} color="black" /> */}
+        <Ionicons
+          name={showPassword ? "eye" : "eye-off"}
+          size={24}
+          color="black"
+          onPress={onShowPassword}
+        />
       </View>
+      {passwordError.current && (
+        <Text style={styles.errorText}>{passwordError.current}</Text>
+      )}
       <View style={{ marginTop: 60 }}>
         <CommonButton
-          onPress={() => router.push("auth/sign-in")}
+          onPress={onSignIn}
           label={"Sign in"}
           enabled={true}
           width={"100%"}
